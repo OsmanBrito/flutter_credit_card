@@ -7,4 +7,5 @@ class CreditCardModel {
   String cardHolderName = '';
   String cvvCode = '';
   bool isCvvFocused = false;
+  String cpf = '';
 }

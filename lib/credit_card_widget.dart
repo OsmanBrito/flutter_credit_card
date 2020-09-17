@@ -18,7 +18,9 @@ class CreditCardWidget extends StatefulWidget {
     this.textStyle,
     this.cardBgColor = const Color(0xff1b447b),
     this.localizedText = const LocalizedText(),
-  })  : assert(cardNumber != null),
+    this.isToView = false
+  })
+      : assert(cardNumber != null),
         assert(showBackView != null),
         assert(localizedText != null),
         super(key: key);
@@ -34,6 +36,7 @@ class CreditCardWidget extends StatefulWidget {
   final double height;
   final double width;
   final LocalizedText localizedText;
+  final bool isToView;
 
   @override
   _CreditCardWidgetState createState() => _CreditCardWidgetState();
@@ -110,9 +113,17 @@ class _CreditCardWidgetState extends State<CreditCardWidget>
 
   @override
   Widget build(BuildContext context) {
-    final double height = MediaQuery.of(context).size.height;
-    final double width = MediaQuery.of(context).size.width;
-    final Orientation orientation = MediaQuery.of(context).orientation;
+    final double height = MediaQuery
+        .of(context)
+        .size
+        .height;
+    final double width = MediaQuery
+        .of(context)
+        .size
+        .width;
+    final Orientation orientation = MediaQuery
+        .of(context)
+        .orientation;
 
     ///
     /// If uer adds CVV then toggle the card from front to back..
@@ -139,23 +150,30 @@ class _CreditCardWidgetState extends State<CreditCardWidget>
     );
   }
 
+  String hideCreditCardNumber(String number) {
+    String opa = number.substring(14);
+    return "**** **** **** $opa";
+  }
+
   ///
   /// Builds a back container containing cvv
   ///
-  Container buildBackContainer(
-    double width,
-    double height,
-    BuildContext context,
-    Orientation orientation,
-  ) {
-    final TextStyle defaultTextStyle = Theme.of(context).textTheme.title.merge(
-          TextStyle(
-            color: Colors.black,
-            fontFamily: 'halter',
-            fontSize: 16,
-            package: 'flutter_credit_card',
-          ),
-        );
+  Container buildBackContainer(double width,
+      double height,
+      BuildContext context,
+      Orientation orientation,) {
+    final TextStyle defaultTextStyle = Theme
+        .of(context)
+        .textTheme
+        .title
+        .merge(
+      TextStyle(
+        color: Colors.black,
+        fontFamily: 'halter',
+        fontSize: 16,
+        package: 'flutter_credit_card',
+      ),
+    );
 
     return Container(
       decoration: BoxDecoration(
@@ -238,20 +256,22 @@ class _CreditCardWidgetState extends State<CreditCardWidget>
   /// Builds a front container containing
   /// Card number, Exp. year and Card holder name
   ///
-  Container buildFrontContainer(
-    double width,
-    double height,
-    BuildContext context,
-    Orientation orientation,
-  ) {
-    final TextStyle defaultTextStyle = Theme.of(context).textTheme.title.merge(
-          TextStyle(
-            color: Colors.white,
-            fontFamily: 'halter',
-            fontSize: 16,
-            package: 'flutter_credit_card',
-          ),
-        );
+  Container buildFrontContainer(double width,
+      double height,
+      BuildContext context,
+      Orientation orientation,) {
+    final TextStyle defaultTextStyle = Theme
+        .of(context)
+        .textTheme
+        .title
+        .merge(
+      TextStyle(
+        color: Colors.white,
+        fontFamily: 'halter',
+        fontSize: 16,
+        package: 'flutter_credit_card',
+      ),
+    );
 
     return Container(
       margin: const EdgeInsets.all(16),
@@ -282,10 +302,11 @@ class _CreditCardWidgetState extends State<CreditCardWidget>
           Expanded(
             child: Padding(
               padding: const EdgeInsets.only(left: 16),
-              child: Text(
-                widget.cardNumber.isEmpty || widget.cardNumber == null
-                    ? widget.localizedText.cardNumberHint
-                    : widget.cardNumber,
+              child: Text(!widget.isToView ?
+              widget.cardNumber.isEmpty || widget.cardNumber == null
+                  ? widget.localizedText.cardNumberHint
+                  : widget.cardNumber : hideCreditCardNumber(
+                  widget.cardNumber),
                 style: widget.textStyle ?? defaultTextStyle,
               ),
             ),
@@ -324,7 +345,7 @@ class _CreditCardWidgetState extends State<CreditCardWidget>
   /// A [List<String>] represents a range.
   /// i.e. ['51', '55'] represents the range of cards starting with '51' to those starting with '55'
   Map<CardType, Set<List<String>>> cardNumPatterns =
-      <CardType, Set<List<String>>>{
+  <CardType, Set<List<String>>>{
     CardType.visa: <List<String>>{
       <String>['4'],
     },
@@ -346,6 +367,36 @@ class _CreditCardWidgetState extends State<CreditCardWidget>
       <String>['270', '271'],
       <String>['2720'],
     },
+    CardType.elo: <List<String>>{
+      <String>['636368'],
+      <String>['438935'],
+      <String>['504175'],
+      <String>['451416'],
+      <String>[
+        '509048',
+        '509067',
+        '509049',
+        '509069',
+        '509050',
+        '509074',
+        '509068',
+        '509040',
+        '509045',
+        '509051',
+        '509046',
+        '509066',
+        '509047',
+        '509042',
+        '509052',
+        '509043',
+        '509064',
+        '509040'
+      ],
+      <String>['36297'],
+      <String>['5067'],
+      <String>['4576'],
+      <String>['4011']
+    }
   };
 
   /// This function determines the Credit Card type based on the cardPatterns
@@ -359,11 +410,11 @@ class _CreditCardWidgetState extends State<CreditCardWidget>
     }
 
     cardNumPatterns.forEach(
-      (CardType type, Set<List<String>> patterns) {
+          (CardType type, Set<List<String>> patterns) {
         for (List<String> patternRange in patterns) {
           // Remove any spaces
           String ccPatternStr =
-              cardNumber.replaceAll(RegExp(r'\s+\b|\b\s'), '');
+          cardNumber.replaceAll(RegExp(r'\s+\b|\b\s'), '');
           final int rangeLen = patternRange[0].length;
           // Trim the Credit Card number string to match the pattern prefix length
           if (rangeLen < cardNumber.length) {
@@ -426,6 +477,16 @@ class _CreditCardWidgetState extends State<CreditCardWidget>
       case CardType.mastercard:
         icon = Image.asset(
           'icons/mastercard.png',
+          height: 48,
+          width: 48,
+          package: 'flutter_credit_card',
+        );
+        isAmex = false;
+        break;
+
+      case CardType.elo:
+        icon = Image.asset(
+          'icons/elo.png',
           height: 48,
           width: 48,
           package: 'flutter_credit_card',
@@ -607,6 +668,7 @@ class MaskedTextController extends TextEditingController {
 enum CardType {
   otherBrand,
   mastercard,
+  elo,
   visa,
   americanExpress,
   discover,
