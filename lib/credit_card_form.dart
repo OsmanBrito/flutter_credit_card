@@ -164,6 +164,7 @@ class _CreditCardFormState extends State<CreditCardForm> {
                 },
                 keyboardType: TextInputType.number,
                 textInputAction: TextInputAction.next,
+                onFieldSubmitted: (v) => FocusScope.of(context).nextFocus(),
               ),
             ),
             Container(
@@ -185,6 +186,7 @@ class _CreditCardFormState extends State<CreditCardForm> {
                 },
                 keyboardType: TextInputType.number,
                 textInputAction: TextInputAction.next,
+                onFieldSubmitted: (v) => FocusScope.of(context).nextFocus(),
               ),
             ),
             Container(
@@ -207,6 +209,7 @@ class _CreditCardFormState extends State<CreditCardForm> {
                 },
                 keyboardType: TextInputType.number,
                 textInputAction: TextInputAction.next,
+                onFieldSubmitted: (v) => FocusScope.of(context).nextFocus(),
                 onChanged: (String text) {
                   setState(() {
                     cvvCode = text;
@@ -233,6 +236,7 @@ class _CreditCardFormState extends State<CreditCardForm> {
                 },
                 keyboardType: TextInputType.text,
                 textInputAction: TextInputAction.next,
+                onFieldSubmitted: (v) => FocusScope.of(context).nextFocus(),
               ),
             ),
             Container(
